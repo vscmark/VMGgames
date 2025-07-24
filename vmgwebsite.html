@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> VMG Games </title>
+    <link rel="icon" href="https://i.pinimg.com/originals/72/3d/0a/723d0af616b1fe7d5c7e56a3532be3cd.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-image: url('https://i.pinimg.com/originals/83/ff/0f/83ff0fcf92ddac2fc7b4f6420fb2056d.gif');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        h1 {
+            font-family: 'Bangers', cursive;
+            font-size: 70px;
+            margin-bottom: 20px;
+            color: #fff;
+            text-shadow: 0px 7px 10px rgba(1, 1, 1, 1);
+            animation: rainbow 5s linear infinite;
+        }
+        @keyframes rainbow {
+            0% { color: red; }
+            14% { color: orange; }
+            28% { color: yellow; }
+            42% { color: green; }
+            57% { color: blue; }
+            71% { color: indigo; }
+            85% { color: violet; }
+            100% { color: red; }
+        }
+        .description {
+            font-size: 16px;
+            margin-bottom: 20px;
+            max-width: 600px;
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #tabs {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .tab {
+            margin: 0 15px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            border: 0px solid #fff;
+            border-radius: 5px;
+            transition: background-color 1s ease;
+            font-size: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+        .tab.active {
+            background: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet);
+            background-size: 2000% 2000%;
+            animation: rainbow-bg 5s linear infinite;
+            color: white;
+            box-shadow: 0px 0px 15px rgba(1, 1, 1, 2);
+            border-radius: 10px;
+        }
+        @keyframes rainbow-bg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        #games-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 30px;
+            max-width: 1000px;
+            overflow-y: auto;
+            max-height: 60vh;
+            background-color: rgba(1, 1, 1, 0);
+        }
+        .game-card {
+            background-color: rgba(1, 1, 1, 0.8);
+            border-radius: 8px;
+            margin: 10px;
+            padding: 0;
+            width: 300px;
+            box-shadow: 0px 0px 10px rgba(1, 1, 1, 1);
+            text-align: center;
+            position: relative;
+        }
+        .game-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: white;
+        }
+        .play-button, .favorite-button {
+            margin: 5px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .play-button {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .favorite-button {
+            background-color: #FF5733;
+            color: white;
+        }
+        .remove-button {
+            background-color: #FF0000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 5px;
+        }
+        .play-button:disabled, .favorite-button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .game-thumbnail {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px 5px 0 0;
+            margin-bottom: 10px;
+        }
+        iframe {
+            width: 98%;
+            height: 85vh;
+            border: none;
+            display: block;
+            margin: 0 auto;
+        }
+        .fullscreen-button, .back-button {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #FFA500;
+            color: white;
+            border: none;
+        }
+        @media (max-width: 600px) {
+            .game-card {
+                width: 100%;
+            }
+            iframe {
+                height: 70vh;
+            }
+        }
+        #forms-link {
+            margin-top: 30px;
+            font-size: 16px;
+            color: #fff;
+        }
+        #forms-link a {
+            color: #ff6f00;
+            text-decoration: none;
+        }
+        #forms-link a:hover {
+            text-decoration: underline;
+        }
+        /* Right-Side Background Panel Styles */
+        .background-panel {
+            position: fixed;
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+            width: 50px; /* Collapsed width */
+            height: auto;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            border-radius: 5px 0 0 5px;
+            box-shadow: -2px 2px 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            transition: width 0.3s ease;
+            overflow: hidden;
+        }
+
+        .background-panel.open {
+            width: 300px; /* Expanded width */
+        }
+
+        .toggle-button {
+            height: 50px;
+            line-height: 50px;
+            width: 50px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.8);
+            color: black;
+            border-radius: 5px 0 0 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-button:hover {
+            background: white;
+        }
+
+        .background-content {
+            padding: 15px;
+            display: none;
+        }
+
+        .background-panel.open .background-content {
+            display: block;
+        }
+
+        .background-button {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 14px;
+            margin: 5px 5px 0 0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .background-button:hover {
+            background: #45a049;
+        }
+
+        #background-url {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        /* RGB color-changing animation for the 'Made by JH' text */
+        @keyframes rgbEffect {
+            0% { color: red; }
+            33% { color: green; }
+            66% { color: blue; }
+            100% { color: red; }
+        }
+
+        .made-by {
+            font-size: 12px;
+            font-weight: bold;
+            color: #ccc;
+            margin: 10px 0 0;
+            text-align: center;
+            animation: rgbEffect 3s infinite; /* Infinite loop with 3s transition */
+        }
+    </style>
+</head>
+<body>
+    <!-- Right-Side Expandable Background Control -->
+    <div id="background-panel" class="background-panel">
+        <div id="background-toggle" class="toggle-button" onclick="toggleBackgroundPanel()">➤</div>
+        <div id="background-content" class="background-content">
+            <input type="text" id="background-url" placeholder="Enter image URL">
+            <button onclick="changeBackground()" class="background-button">Change Background</button>
+            <button onclick="resetBackground()" class="background-button">Reset</button>
+            <p class="made-by">Made by JH</p>
+        </div>
+    </div>
+
+    <div id="home-screen">
+        <h1>Welcome to VMG Games</h1>
+        <p class="description">
+
+        <!-- Tabs for Library and Favorites -->
+        <div id="tabs">
+            <div class="tab active" onclick="switchTab('library')">Library</div>
+            <div class="tab" onclick="switchTab('favorites')">Favorites</div>
+        </div>
+
+        <!-- Game Library -->
+        <div id="games-container" class="active">
+            <!-- Game Cards will be added dynamically -->
+        </div>
+
+        <!-- Favorites Section -->
+        <div id="favorites-container" style="display: none;">
+            <h2>Your Favorites</h2>
+            <div id="favorites-list"></div>
+        </div>
+    </div>
+
+    <!-- Game Screen (Game details + iframe) -->
+    <div id="game-screen" style="display: none;">
+        <div>
+            <h2 id="game-title"></h2>
+            <iframe 
+    id="game-frame" 
+    src="about:blank" 
+    sandbox="allow-forms allow-scripts allow-same-origin allow-top-navigation-by-user-activation" 
+    width="98%" 
+    height="85vh" 
+    frameborder="0" 
+    style="display: block; margin: 0 auto;">
+</iframe>
+
+            
+            <button class="fullscreen-button" onclick="toggleFullscreen()">Fullscreen</button>
+            <button class="back-button" onclick="goBack()">Back to Home</button>
+        </div>
+    </div>
+
+    <!-- Google Forms Link -->
+    <div id="forms-link">
+        <p>Send Feedback and Request games/apps to be added to the site through this form: <a href="https://docs.google.com/forms/d/e/1FAIpQLSeb2fUeyzYwYRiY0LntKa1yYFm1OZD8d68NRvMlhP3myqYStw/viewform?usp=dialog" target="_blank">Request Form</a></p>
+    </div>
+
+    <script>
+    const games = [
+        { name: 'EasyFun.GG Cloud Gaming', url: 'https://www.easyfun.gg/', thumbnail: 'https://247press.images.worldnow.com/images/26066178_G.jpg?auto=webp&disable=upscale&height=560&fit=bounds&lastEditedDate=1723112258000' },
+        { name: '1v1.lol - (FPS Drops)', url: 'https://1v1.lol/', thumbnail: 'https://buildnowgg.io/data/image/capsule_616x353-51.jpg' },
+        { name: '1v1.lol *Not BR - (works better)*', url: 'https://1v1lol-unblocked-games.github.io/', thumbnail: 'https://i.ytimg.com/vi/B6ToitdFvHA/maxresdefault.jpg' },
+        { name: 'Shell Shockers', url: 'https://shellshock.io/', thumbnail: 'https://www.shellshock.io/img/previewImage_shellShockers.webp' },
+        { name: 'Slither.io', url: 'https://slither.io/', thumbnail: 'https://play-lh.googleusercontent.com/Jjm072EaR2y01A-Z19UVR6UqBspEZxWP11sGmFElI9782MebzsOqFKskL00PJ-HpUJ-P' },
+        { name: 'Venge.io', url: 'https://venge.io/', thumbnail: 'https://img.gamepix.com/games/venge-io/cover/venge-io.png?w=400&ar=16:10' },
+        { name: 'Paper.io', url: 'https://paper-io.com/', thumbnail: 'https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/ncom/software/switch/70010000068359/73341197ab2f46b0b68c46bd610bcd65ba490045423c918e4a9f199cd7584e20' },
+    ];
+
+    // Load favorites from localStorage on page load
+    function loadFavoritesFromLocalStorage() {
+        const storedFavorites = localStorage.getItem('favorites');
+        if (storedFavorites) {
+            return JSON.parse(storedFavorites);
+        }
+        return []; // If no favorites are saved, return an empty array
+    }
+
+    const favorites = loadFavoritesFromLocalStorage();
+
+    function saveFavoritesToLocalStorage() {
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+    }
+
+    function loadGames() {
+        const gamesContainer = document.getElementById('games-container');
+        gamesContainer.innerHTML = '';
+        games.forEach(game => {
+            const gameCard = document.createElement('div');
+            gameCard.className = 'game-card';
+            gameCard.innerHTML = `
+                <img src="${game.thumbnail}" alt="${game.name}" class="game-thumbnail">
+                <div class="game-title">${game.name}</div>
+                <button class="play-button" onclick="playGame('${game.name}', '${game.url}')">Play</button>
+                <button class="favorite-button" onclick="toggleFavorite('${game.name}')">
+                    ${favorites.some(fav => fav.name === game.name) ? 'Remove' : 'Add to Favorites'}
+                </button>
+            `;
+            gamesContainer.appendChild(gameCard);
+        });
+    }
+
+    function playGame(name, url) {
+        const gameScreen = document.getElementById('game-screen');
+        const gameFrame = document.getElementById('game-frame');
+        const gameTitle = document.getElementById('game-title');
+        gameScreen.style.display = 'block';
+        gameFrame.src = url;
+        gameTitle.textContent = name;
+        document.getElementById('home-screen').style.display = 'none';
+    }
+
+    function goBack() {
+        const iframe = document.getElementById('game-frame');
+        iframe.src = "about:blank"; // Stops the game immediately
+        document.getElementById('game-screen').style.display = 'none';
+        document.getElementById('home-screen').style.display = 'block';
+    }
+
+    function toggleFullscreen() {
+        const gameFrame = document.getElementById('game-frame');
+        if (gameFrame.requestFullscreen) {
+            gameFrame.requestFullscreen();
+        } else if (gameFrame.mozRequestFullScreen) {
+            gameFrame.mozRequestFullScreen();
+        } else if (gameFrame.webkitRequestFullscreen) {
+            gameFrame.webkitRequestFullscreen();
+        } else if (gameFrame.msRequestFullscreen) {
+            gameFrame.msRequestFullscreen();
+        }
+    }
+
+    function toggleFavorite(gameName) {
+        const game = games.find(g => g.name === gameName);
+        const isFavorite = favorites.some(fav => fav.name === gameName);
+
+        if (isFavorite) {
+            // Remove from favorites
+            const index = favorites.findIndex(fav => fav.name === gameName);
+            favorites.splice(index, 1);
+        } else {
+            // Add to favorites
+            favorites.push(game);
+        }
+
+        saveFavoritesToLocalStorage();
+        loadGames(); // Refresh the library with updated favorite status
+        renderFavorites(); // Update the favorites tab
+    }
+
+    function renderFavorites() {
+        const favoritesList = document.getElementById('favorites-list');
+        favoritesList.innerHTML = '';
+        favorites.forEach(game => {
+            const gameItem = document.createElement('div');
+            gameItem.className = 'game-card';
+            gameItem.innerHTML = `
+                <img src="${game.thumbnail}" alt="${game.name}" class="game-thumbnail">
+                <div class="game-title">${game.name}</div>
+                <button class="play-button" onclick="playGame('${game.name}', '${game.url}')">Play</button>
+                <button class="remove-button" onclick="removeFromFavorites('${game.name}')">Remove from Favorites</button>
+            `;
+            favoritesList.appendChild(gameItem);
+        });
+    }
+
+    function removeFromFavorites(gameName) {
+        const index = favorites.findIndex(fav => fav.name === gameName);
+        if (index > -1) {
+            favorites.splice(index, 1);
+            saveFavoritesToLocalStorage();
+            renderFavorites(); // Re-render the favorites list
+            loadGames(); // Re-render the games library to reflect changes
+        }
+    }
+
+    function switchTab(tab) {
+    if (tab === 'library') {
+        document.getElementById('games-container').style.display = 'flex';
+        document.getElementById('favorites-container').style.display = 'none';
+    } else if (tab === 'favorites') {
+        document.getElementById('games-container').style.display = 'none';
+        document.getElementById('favorites-container').style.display = 'block';
+    }
+    
+    // Update the active class on the tabs
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelector(`.tab[onclick="switchTab('${tab}')"]`).classList.add('active');
+}
+
+
+    loadGames(); // Initialize game library
+// Toggle the right-side background panel
+function toggleBackgroundPanel() {
+    const panel = document.getElementById('background-panel');
+    const toggleButton = document.getElementById('background-toggle');
+
+    if (panel.classList.contains('open')) {
+        panel.classList.remove('open');
+        toggleButton.textContent = '➤';
+    } else {
+        panel.classList.add('open');
+        toggleButton.textContent = '❮';
+    }
+}
+
+// Change the background to a custom URL
+function changeBackground() {
+    const urlInput = document.getElementById('background-url').value;
+    if (urlInput) {
+        document.body.style.backgroundImage = `url('${urlInput}')`;
+        document.body.style.backgroundSize = 'cover'; // Ensure the image covers the screen
+        document.body.style.backgroundRepeat = 'no-repeat';
+        document.body.style.backgroundAttachment = 'fixed'; // Fix background
+        localStorage.setItem('backgroundImage', urlInput); // Save the background URL
+    } else {
+        alert('Please enter a valid image URL.');
+    }
+}
+
+// Reset the background to the default
+function resetBackground() {
+    const defaultBackground = ''; // Default background or leave blank
+    document.body.style.backgroundImage = defaultBackground;
+    localStorage.removeItem('backgroundImage'); // Clear the saved background URL
+}
+
+// Load the saved background on page load
+document.addEventListener('DOMContentLoaded', () => {
+    const savedBackground = localStorage.getItem('backgroundImage');
+    if (savedBackground) {
+        document.body.style.backgroundImage = `url('${savedBackground}')`;
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundRepeat = 'no-repeat';
+        document.body.style.backgroundAttachment = 'fixed';
+    }
+function loadDecoyContent() {
+    var iframe = document.getElementById('game-frame');
+    // Load decoy content (could be a loading page or some static content)
+    iframe.src = "https://clever.com/in/alexandria/student/portal"; // Path to the decoy content
+}
+
+// Trigger the loading function when the page is ready
+window.onload = loadDecoyContent;
+});
+</script> <!-- Close your script tag here -->
+</body>
+</html>
